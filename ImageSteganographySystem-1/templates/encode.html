@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Encode{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-center mb-4">Encode Message in Image</h2>
+                
+                <form id="encodeForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Select Image</label>
+                        <input type="file" class="form-control" id="image" name="image" accept=".png,.jpg,.jpeg" required>
+                        <div class="form-text text-light">Supported formats: PNG, JPG, JPEG</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Secret Message</label>
+                        <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="key" class="form-label">Encryption Key</label>
+                        <input type="text" class="form-control" id="key" name="key" required>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Encode Message</button>
+                    </div>
+                </form>
+                
+                <div id="preview" class="mt-4" style="display: none;">
+                    <h3 class="text-center mb-3">Encoded Image Preview</h3>
+                    <div class="text-center">
+                        <img id="previewImage" class="preview-image" src="" alt="Encoded Image">
+                    </div>
+                    <div class="text-center mt-3">
+                        <a id="downloadLink" href="#" class="btn btn-primary" download="encoded_image.png">
+                            <i class="fas fa-download"></i> Download Encoded Image
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#encodeForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        var formData = new FormData(this);
+        
+        $.ajax({
+            url: '/encode',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    $('#previewImage').attr('src', response.preview);
+                    $('#downloadLink').attr('href', response.preview);
+                    $('#preview').show();
+                }
+            },
+            error: function(xhr) {
+                var error = xhr.responseJSON ? xhr.responseJSON.error : 'An error occurred';
+                alert(error);
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

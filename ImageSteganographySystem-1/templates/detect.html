@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Detect{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-center mb-4">Detect Hidden Content & Malware</h2>
+                
+                <form id="detectForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Select Image</label>
+                        <input type="file" class="form-control" id="image" name="image" accept=".png,.jpg,.jpeg" required>
+                        <div class="form-text text-light">Supported formats: PNG, JPG, JPEG</div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Analyze Image</button>
+                    </div>
+                </form>
+                
+                <div id="results" class="mt-4" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h3 class="text-center mb-3">Steganography Analysis</h3>
+                                    <div id="stegResults">
+                                        <p><strong>Probability of hidden content:</strong> <span id="stegProbability"></span></p>
+                                        <p><strong>Noise level:</strong> <span id="noiseLevel"></span></p>
+                                        <p><strong>Entropy:</strong> <span id="entropy"></span></p>
+                                        <p><strong>Contains steganographic content:</strong> <span id="isSteganographic"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h3 class="text-center mb-3">Malware Analysis</h3>
+                                    <div id="malwareResults">
+                                        <p><strong>Malware detected:</strong> <span id="isMalware"></span></p>
+                                        <p><strong>Confidence:</strong> <span id="confidence"></span></p>
+                                        <p><strong>Threat level:</strong> <span id="threatLevel"></span></p>
+                                        <div id="detectionMethods" class="mt-3">
+                                            <strong>Detection methods:</strong>
+                                            <ul id="methodsList" class="mt-2"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#detectForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        var formData = new FormData(this);
+        
+        $.ajax({
+            url: '/detect',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    // Update steganography results
+                    $('#stegProbability').text((response.steg_results.steganography_probability * 100).toFixed(2) + '%');
+                    $('#noiseLevel').text(response.steg_results.noise_level.toFixed(4));
+                    $('#entropy').text(response.steg_results.entropy.toFixed(4));
+                    $('#isSteganographic').text(response.steg_results.is_steganographic ? 'Yes' : 'No');
+                    
+                    // Update malware results
+                    $('#isMalware').text(response.malware_results.is_malware ? 'Yes' : 'No');
+                    $('#confidence').text((response.malware_results.confidence * 100).toFixed(2) + '%');
+                    $('#threatLevel').text(response.malware_results.threat_level);
+                    
+                    // Update detection methods
+                    $('#methodsList').empty();
+                    response.malware_results.detection_methods.forEach(function(method) {
+                        $('#methodsList').append('<li>' + method + '</li>');
+                    });
+                    
+                    $('#results').show();
+                }
+            },
+            error: function(xhr) {
+                var error = xhr.responseJSON ? xhr.responseJSON.error : 'An error occurred';
+                alert(error);
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

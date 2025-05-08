@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <h1 class="display-4 mb-4">Welcome to StegaX</h1>
+        <p class="lead mb-5">Secure Image Steganography and Malware Detection</p>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <i class="fas fa-lock fa-3x mb-3" style="color: var(--accent-color);"></i>
+                        <h3>Encode</h3>
+                        <p>Hide your secret messages within images using advanced steganography techniques.</p>
+                        <a href="/encode" class="btn btn-primary">Start Encoding</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <i class="fas fa-unlock fa-3x mb-3" style="color: var(--accent-color);"></i>
+                        <h3>Decode</h3>
+                        <p>Extract hidden messages from images using your encryption key.</p>
+                        <a href="/decode" class="btn btn-primary">Start Decoding</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <i class="fas fa-shield-alt fa-3x mb-3" style="color: var(--accent-color);"></i>
+                        <h3>Detect</h3>
+                        <p>Analyze images for hidden content and potential malware threats.</p>
+                        <a href="/detect" class="btn btn-primary">Start Detection</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-5">
+            <h2>How It Works</h2>
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4>1. Choose an Image</h4>
+                            <p>Select any PNG or JPG image to work with.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4>2. Enter Your Message</h4>
+                            <p>Type your secret message and encryption key.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4>3. Process</h4>
+                            <p>Our system will encode, decode, or analyze your image.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
